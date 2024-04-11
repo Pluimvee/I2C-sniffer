@@ -136,6 +136,10 @@ void IRAM_ATTR i2cTriggerOnRaisingSCL()
  */
 void IRAM_ATTR i2cTriggerOnChangeSDA()
 {
+	i2cClk = digitalRead(PIN_SCL);
+  	if (i2cClk == 0)  // if SCL is low we are in a comm frame 
+    		return;
+	
 	//make sure that the SDA is in stable state
 	do
 	{
@@ -147,8 +151,6 @@ void IRAM_ATTR i2cTriggerOnChangeSDA()
 
 	if(i2cBitD)//RISING if SDA is HIGH (1)
 	{
-		
-		i2cClk = digitalRead(PIN_SCL);
 		if(i2cStatus=!I2C_IDLE && i2cClk==1)//If SCL still HIGH then it is a STOP sign
 		{			
 			//i2cStatus = I2C_STOP;
@@ -163,8 +165,6 @@ void IRAM_ATTR i2cTriggerOnChangeSDA()
 	}
 	else //FALLING if SDA is LOW
 	{
-		
-		i2cClk = digitalRead(PIN_SCL);
 		if(i2cStatus==I2C_IDLE && i2cClk)//If SCL still HIGH than this is a START
 		{
 			i2cStatus = I2C_TRX;
